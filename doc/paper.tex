@@ -1,0 +1,379 @@
+\documentclass[twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{kotex}
+
+\usepackage{geometry}
+\geometry{a4paper,
+  % total={170mm,257mm},
+  left=10mm,
+  right=10mm,
+  top=30mm,
+  bottom=20mm,
+}
+
+% packages
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{amssymb}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage{stmaryrd}
+\usepackage{listings}
+\usepackage{proof}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+%%%%%%%%%% theorems %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{fact}[theorem]{Fact}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{definition}
+\newtheorem{observation}[theorem]{Observation}
+
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{fact}{Fact}{Facts}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{section}{Section}{Sections}
+
+%%%%%%%%%% commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\inlinedef}[1]{\emph{\textbf{#1}}}
+
+\newcommand{\IN}{\mathbb{N}}
+\newcommand{\IZ}{\mathbb{Z}}
+\newcommand{\IQ}{\mathbb{Q}}
+\newcommand{\IR}{\mathbb{R}}
+\newcommand{\IC}{\mathbb{C}}
+\newcommand{\dom}{\text{dom}}
+\newcommand{\rng}{\text{rng}}
+\newcommand{\0}{\texttt{0}}
+\newcommand{\1}{\texttt{1}}
+\newcommand{\pwp}{{\mathcal{P}_+}}
+\newcommand{\concat}{\ensuremath{+\!\!\!\!+\,}}
+
+\newcommand{\two}{{\{\0,\1\}}}
+\newcommand{\cantor}{{\mathcal{C}}}
+\newcommand{\reprof}{{ : \subseteq \cantor \twoheadrightarrow }}
+\newcommand{\canpmap}{{ : \subseteq \cantor \rightarrow }}
+
+\newcommand{\embed}[1]{{\upharpoonleft} {#1}}
+
+% proofread:
+\newcommand{\sewon}[1]{{\color{red} #1}}
+
+% macros
+% font
+\newcommand{\coqpath}[1]{\texttt{#1}}
+
+% mathematics
+\newcommand{\Prop}{\mathbf{Prop}}
+\newcommand{\FV}{\mathrm{FV}}
+\newcommand{\bnfis}{\mathrel{\;{:}{:}{=}\ }}
+\newcommand{\bnfor}{\mathrel{\;\big|\; }}
+\newcommand{\diff}{:\!\!\iff}
+% \newcommand{\IR}{\mathbb{R}}
+\newcommand{\proves}[2]{\mathtt{proof}\ #1\ #2 }
+
+% monad of list
+\newcommand{\listunit}[1]{[#1]}
+
+% Syntax
+\newcommand{\Leq}{\mathrel{\dot{=}}}
+\newcommand{\Lbot}{\mathop{\dot{\bot}}}
+\newcommand{\Lneg}{\mathop{\dot{\neg}}}
+\newcommand{\Lto}{\mathrel{\dot{\to}}}
+\newcommand{\Lall}[1]{\dot{\forall}#1\ }
+
+\newcommand\blfootnote[1]{%
+\begingroup%
+\let\thefootnote\relax\footnotetext{\hspace{-4pt}#1}%
+\endgroup}%
+
+\renewenvironment{abstract}
+ {\small
+  \begin{center}
+  \bfseries \abstractname\vspace{-.5em}\vspace{0pt}
+  \end{center}
+  \list{}{%
+    \setlength{\leftmargin}{2cm}% <---------- CHANGE HERE
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \item\relax}
+ {\endlist}
+
+\DeclareSymbolFont{boldoperators}{OT1}{cmr}{bx}{n}
+\SetSymbolFont{boldoperators}{bold}{OT1}{cmr}{bx}{n}
+\edef\bar{\unexpanded{\protect\mathaccentV{bar}}\number\symboldoperators16}
+
+\usepackage{sectsty}
+
+\sectionfont{\fontsize{12}{15}\selectfont}
+
+\title{
+  고전일차논리의 새로운 Coq 형식화와 건전성 및 완전성 정리의 증명 \\
+  { \small
+    임기정 \\
+    전남대학교 기계공학부 \\
+    \texttt{gijungdduk@naver.com} \\
+  }
+  A New Coq Formalisation of Classical First-Order Logic \\
+  with Proofs of the Soundness and Completeness Theorems \\
+  { \small 
+    Kijeong Lim
+  }
+}
+
+\author{}
+\date{\vspace{-10.5ex}}
+
+\begin{document}
+
+\twocolumn[
+  \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+      In this study, assuming the law of excluded middle, the soundness theorem of a Hilbert calculus with respect to Tarski’s semantics and the completeness theorem for all countable first-order languages are formally proved.
+      This formalisation provides named quantifiers and Leibniz equality.
+      These features enable mathematicians to use it as a framework for verifying their proofs based on classical first-order logic.
+      \newline
+    \end{abstract}
+  \end{@twocolumnfalse}
+]
+
+\section{Introduction}
+
+It has been a common practice in software verification to rely on proof assistants, such as Coq and Isabelle,
+to obtain formal proofs of program correctness. In these systems, programs are abstracted as mathematical entities, and their behaviour is denoted by certain mathematical properties. Thus, to reason about the behaviour of a program effectively using a proof assistant, there must be a well-developed theory about the mathematical properties being verified. For example, the Software Foundation Laboratory formalized a theory of ordinal numbers, which is a purely mathematical concept, to state and/or prove the termination of a program in the CCR library \cite{hur2023} of the laboratory.
+
+Most proof assistants do not adopt the usual first-order language used by working mathematicians (e.g., $\mathsf{ZFC}$). Instead, they take dependent type theory as their foundation. Thus, translating even a simple proof directly into a proof assistant without an intermediate language can be error-prone and requires expertise in both foundational systems. Therefore, to facilitate the translation of mathematical theories into a proof assistant, an intermediate language is deemed necessary. 
+
+In this paper, the formalisation of a classical first-order logic and its proof rules in the setting of dependent type theory are proposed. To serve as an intermediate language, it closely resembles the traditional first-order language used by mathematicians, allowing many existing proofs to be integrated with minimal effort. This formalisation has been fully implemented in the Coq proof assistant. Hence, a proof written in our language is automatically translated into a proof term inside Coq.
+
+Users are given both syntactic and semantic systems to obtain a consequence from a set of a possibly infinite number of assumptions.
+The syntactic entailment $\Gamma \vdash C$ means that $C$ is provable assuming $\Gamma$,
+while the semantic entailment $\Gamma \vDash C$ means that every model that satisfies all of the members of $\Gamma$ also satisfies $C$.
+Here, the word `satisfy' is defined as the notion of ``Tarski's definition of truth'' in \Cref{ss:Semantics}.
+The soundness theorem and the completeness theorem guarantee the two systems coincide with each other.
+Furthermore, to facilitate the translation of mathematical results, Leibniz equality $\Leq$ with its introduction and elimination rules is provided, and the quantifiers in the system under this study bind named variables. Thus, variables are not represented by de Bruijn indices.
+
+Obviously, the idea of formalizing a first-order logic in dependent type theory is not new. To name a few:
+\begin{description}
+  \item[Ilik (2010) \cite{ilik2010}] formalized in its first chapter the completeness theorem of classical natural deduction for Tarski's semantics, but the proof was incomplete.
+
+  \item[Constable and Bickford (2014) \cite{constable2014}] formalized the completeness theorem for intuitionistic logic rather than classical logic.
+
+  \item[Herberlin, Kim and Lee (2017) \cite{herberlin2017}]  formalized the completeness theorem of the Gentzen-style sequent calculus LJT for Kripke's semantics instead of Tarski's semantics.
+
+  \item[Forster, Kirst and Wehr (2021) \cite{forster2021}] formalized the completeness theorem of classical natural deduction for Tarski's semantics. While their work is perfect, the setting based on de Bruijn index makes it difficult to use.
+
+  \item[From (2022) \cite{halkjaer2022}] formalized the completeness theorem of a Hilbert calculus for Tarski's semantics while adopting de Bruijn index. However, there is a side condition.
+\end{description}
+
+However, there are no known works that give Leibniz equality and named quantifiers and allow users to assume an infinite number of axioms at the same time. Thus, the formalisation in this paper is the richest one.
+
+\section{Project overview}
+\label{s:coq}
+
+The formalisation with proofs in this paper is implemented as a Coq project in \cite{coqrepo}.
+Here the organization of the project is briefly illustrated.
+\begin{description}[font=\normalfont]
+  \item[\coqpath{theories/Logic/BasicFol.v}]
+    defines the syntax and semantics of first-order languages with substitutions and $\alpha$-equivalence.
+
+  \item[\coqpath{theories/Logic/BasicFol2.v}]
+    has statements and proofs on augmented languages by adding Hekin constants.
+
+  \item[\coqpath{theories/Logic/HilbertFol.v}]
+     defines a Hilbert calculus. Moreover, it states and proves \Cref{t:Deduction}.
+
+  \item[\coqpath{theories/Logic/HilbertFol2.v}]
+    provides additional inference rules, includes theorems for the augmented languages, and contains \Cref{f:subs,f:restr}.
+
+  \item[\coqpath{theories/Logic/ClassicalFol.v}]
+    gives \Cref{t:soundness,t:Completeness}, which are the soundness theorem and the countable completeness theorem, respectively.
+
+\end{description}
+
+\section{Formalisation}
+\label{s:Formalisation}
+
+\subsection{Syntax}
+\label{ss:Syntax}
+
+A \inlinedef{first-order language} $L$ is represented as a record with the following fields:
+a set of \inlinedef{function symbols}, a set of \inlinedef{constant symbols}, a set of \inlinedef{relation symbols}, a table mapping each function symbol to its arity, and a table mapping each relation symbol to its arity.
+Each \inlinedef{individual variable} $x$ corresponds to a natural number:
+\[x \bnfis v_i \quad \mathrm{for} \quad i \in \IN . \]
+An \inlinedef{$L$-term} $t$ and an \inlinedef{$L$-formula} $\varphi$ are defined inductively:
+\begin{align*}
+t &\bnfis x \bnfor f \; \vec{t} \bnfor c  \\
+\varphi &\bnfis R \; \vec{t} \bnfor t_1 \Leq t_2 \bnfor \Lneg \varphi_1 \bnfor  \varphi_1  \Lto \varphi_2 \bnfor \Lall{x} \varphi_1
+\end{align*}
+where $f$ is a function symbol of $L$, $c$ is a constant symbol of $L$, $R$ is a relation symbol of $L$, and $\vec{t}$ is a vector of $L$-terms.
+For a first-order language $L$, write $\mathtt{trm} \, L$ for the type of $L$-terms,  $\mathtt{trms} \, L \, n$ for the type of vectors of $L$-terms of length $n$, and $\mathtt{frm} \, L$ for the type of $L$-formulae.
+
+Similarly to \cite{copello2017}, a simultaneous substitution $\sigma$ is defined as a map $\IN \to \mathtt{trm} \, L$, saying that $\sigma (i)$ is substituted for $v_i$. Additionally, $\alpha$-equivalence is defined in the same way as \cite{copello2017}.
+
+\subsection{Semantics}
+\label{ss:Semantics}
+
+Let $L$ be a first-order language.
+A \inlinedef{structure} $\mathfrak{A}$ of $L$ consists of a setoid $\left( A , \sim_A \right)$,
+interpretations $f^\mathfrak{A} : A^{n_f} \to A$ for each function symbol $f$ of $L$,
+interpretations $c^\mathfrak{A} : A$ for each constant symbol $c$ of $L$, and
+interpretations $R^\mathfrak{A} : A^{n_R} \to \Prop$ for each relation symbol $R$ of $L$
+such that $A$ is inhabited and
+$\sim_A$ is congruent with all interpretations of $\mathfrak{A}$,
+where $n_f$ and $n_R$ are the arities of $f$ and $R$, respectively.
+Denote the type $A$ by $| \mathfrak{A} |$, which is called the  \inlinedef{domain of discourse} of $\mathfrak{A}$.
+
+Let $\mathfrak{A}$ be a structure of $L$ and $\rho : \IN \to | \mathfrak{A} |$ be given.
+An interpretation $\llbracket t \rrbracket_\rho^\mathfrak{A} : | \mathfrak{A} |$ of an $L$-term $t$ is defined recursively in a natural way, starting with $\llbracket v_i \rrbracket_\rho^\mathfrak{A} := \rho \left( i \right)$.
+An interpretation $\llbracket \varphi \rrbracket_\rho^\mathfrak{A} : \Prop$ of an $L$-formula $\varphi$ is defined recursively in a natural way, with Leibniz equality $\Leq$ interpreted as $\sim_{|\mathfrak{A}|}$.
+We say that $( \mathfrak{A} , \rho )$ \inlinedef{satisfies} $\varphi$ if $\llbracket \varphi \rrbracket_\rho^\mathfrak{A}$ is inhabited.
+
+\begin{definition}
+\label{d:model}
+Given a first-order language $L$, an $L$-formula $C$ is said to be a \inlinedef{semantic consequence} of a set $\Gamma$ of $L$-formulae if and only if for every structure $\mathfrak{A}$ of $L$ and every $\rho : \IN \to | \mathfrak{A} |$, if $ (\mathfrak{A} , \rho ) $ satisfies all of the members of $\Gamma$, then it also satisfies $C$. Then write $\Gamma \vDash C$.
+\end{definition}
+
+\subsection{Deduction system}
+\label{ss:Deduction-system}
+
+The deduction system in this system is defined à la Hilbert in a manner that is similar to that used in the thesis of Russell O'Connor \cite{o2009incompleteness}.
+For a (possibly infinite) set $\Gamma$ of $L$-formulae and an $L$-formula $C$, write $\Gamma \vdash C$ to denote that there is a finite list $\vec{\varphi} \subseteq \Gamma$ such that  $\mathtt{proof} \, \vec{\varphi} \, C$ is inhabited. Here, 
+$\mathtt{proof} : \mathtt{list} \, ( \mathtt{frm} \, L ) \to \mathtt{frm} \, L \to \mathbf{Set}$ is an inductive family of types representing proofs with constructors including:
+\begin{mathpar}
+\inferrule*[lab=Axm]{
+}
+{ 
+\proves{\listunit{p}}{p}
+}
+\inferrule*[lab=Mp]
+{
+\proves{\vec{\varphi}_1}{(p \Lto q)}
+\quad
+\proves{\vec{\varphi}_2}{p}
+}
+{
+\proves{(\vec{\varphi}_1 \concat \vec{\varphi}_2)}{q}
+}
+\and
+\inferrule*[lab=Gen, right=$x \not\in \FV(\vec{\varphi})$]
+{
+\proves{\vec{\varphi}}{p}
+}
+{
+\proves{\vec{\varphi}}{( \Lall{x} p )}
+}
+\and
+\inferrule*[lab=Eqn\_Fun]
+{ }{
+\proves{\listunit{ }}{\mathtt{(Fun\_eqAxm} \, f)}
+}
+\inferrule*[lab=Eqn\_Rel]
+{ }{
+\proves{\listunit{ }}{\mathtt{(Rel\_eqAxm} \, R)}
+}
+\end{mathpar}
+
+$\textsc{Axm}$ is required to show $\varphi \in \Gamma \implies \Gamma \vdash \varphi$. Since $\textsc{Axm}$ and $\textsc{Mp}$ are modified in such a way, it requires the list of axioms to be in the correct order for the proof.
+$\textsc{Gen}$ has a proviso, which is a trade-off for eliminating the side condition of the Deduction Theorem.
+$\textsc{Eqn\_Fun}$ and $\textsc{Eqn\_Rel}$ state that $\Leq$ is congruent with $f$ and $R$, respectively.
+The constructors for $\Leq$ are just axioms, not axiom schemata. Thus, there are no parameters that can be adjusted except for $f$ and/or $R$.
+
+\section{Meta-theory}
+\label{s:metatheory}
+
+First of all, the following theorem is fundamental:
+\begin{theorem}[Deduction]
+\label{t:Deduction}
+For any $L$-formulae $H$, $C$, and any set $\Gamma$ of $L$-formulae,
+\[ \Gamma \vdash H \Lto C \iff \left\{ H \right\} \cup \Gamma \vdash C \ . \]
+\end{theorem}
+
+Then, one can prove the soundness theorem by induction on $\mathtt{proof}$ with $\mathtt{classic} : \forall P : \Prop, P \lor \lnot P$.
+\begin{theorem}[Soundness]
+\label{t:soundness}
+For any $L$-formula $C$ and any set $\Gamma$ of $L$-formulae,
+$\Gamma \vdash C$ implies $\Gamma \vDash C$.
+\end{theorem}
+
+Furthermore, we need to prove the properties of $\Leq$. One can show that $\Leq$ is reflexive, symmetric, and transitive, and that it is congruent with $f$ and $R$.
+Finally, one can obtain:
+\begin{fact}
+\label{f:subs}
+For any individual variable $x$, any $L$-terms $t_1$, $t_2$, any $L$-formula $\varphi$, and any set $\Gamma$ of $L$-formulae,
+$$\infer[]{\Gamma \vdash [t_2/x] \varphi}{\Gamma \vdash t_1 \Leq t_2 & \Gamma \vdash [t_1 / x] \varphi}$$
+\end{fact}
+
+We now aim to prove the completeness theorem for an arbitrary countable first-order language $L$.
+Define an extension $L^\prime$ of $L$ by adding \inlinedef{Henkin constants}, where each Henkin constant $\bar{c}$ corresponds to a natural number.
+Denote the embedding of an $L$-formula $\varphi$ into the language $L^\prime$ by $\embed{\varphi}$. For a set $\Gamma$ of $L$-formulae, define $\embed{\Gamma} := \left\{ \embed{\varphi} \mid \varphi \in \Gamma \right\}$.
+Observe:
+
+\begin{fact} 
+\label{f:restr}
+For any $L$-formula $\varphi$ and any set $\Gamma$ of $L$-formulae,
+$$ \embed{\Gamma} \vdash \embed{\varphi} \iff \Gamma \vdash \varphi . $$
+\end{fact}
+
+Meanwhile, define a sequence $\langle \theta_n \rangle_{n\in\IN}$ of $L^{\prime}$-formulae, which will be called the sequence of \inlinedef{Henkin axioms}, and define a sequence $\langle \bar{c}_n \rangle_{n\in\IN}$ of Henkin constants, similarly to \cite{enderton2001}.
+
+Let $\langle \left( x_n , \varphi_n \right) \rangle_{n\in\IN}$ be a fixed enumeration of pairs, where $x_n$ is an individual variable and $\varphi_n$ is an $L^{\prime}$-formula.
+For $n \in \mathbb{N}$, $$\theta_n : \equiv ([\bar{c}_n / x_n] \varphi_n) \Lto (\Lall{x_n} \varphi_n) ,$$
+where $\bar{c}_n$ is the first of the new Henkin constant symbols not occurring in $\varphi_n$ or $\theta_k$ for any $k < n$.
+Once the Henkin axioms are defined in that way, for any set $\Gamma$ of $L$-formulae,
+$$ \Gamma \vdash \Lbot \iff \left\{ \theta_n \mid n \in \IN \right\} \cup \embed{\Gamma} \vdash \Lbot , $$
+where $\Lbot : \equiv \Lneg (\Lall{v_0} (v_0 \Leq v_0))$.
+Finally, one can prove:
+
+\begin{theorem}[Countable Completeness]
+\label{t:Completeness}
+For any $L$-formula $b$ and any (possibly infinite) set $X$ of $L$-formulae, $$X \vDash b \implies X \vdash b .$$
+\end{theorem}
+\begin{proof}
+Assume $X \nvdash b$.
+Take $\Gamma := \left\{ \Lneg b \right\} \cup X$.
+Then, $\Gamma \nvdash \Lbot$.
+Hence, one can construct a maximally consistent set $\Delta$ of $L^{\prime}$-formulae such that $\left\{ \theta_n \mid n \in \IN \right\} \cup \embed{\Gamma} \subseteq \Delta $ and $$\varphi \in \Delta \iff \Delta \vdash \varphi$$ for an arbitrary $L^{\prime}$-formula $\varphi$.
+Now, define a structure $\mathfrak{A}$ of $L^{\prime}$ as follows: its domain of discourse is $ \mathtt{trm} \, L^{\prime}  $, where the equivalence relation on $ | \mathfrak{A} | $ is defined by
+\[t_1 \sim t_2 \diff \Delta \vdash t_1 \Leq t_2 . \]
+The interpretations are given by $f^{\mathfrak{A}} := \vec{t} \mapsto f \; \vec{t}$, $c^{\mathfrak{A}} := c $, and $R^{\mathfrak{A}} := \vec{t} \mapsto \Delta \vdash R \; \vec{t}$.
+Then, for an arbitrary $L^{\prime}$-formula $\varphi$, setting $\rho := i \mapsto v_i$, by induction on the depth of $\varphi$, one can show $ \varphi \in \Delta \Leftrightarrow \llbracket \varphi \rrbracket_\rho^{\mathfrak{A}} $ with the axiom $\mathtt{classic}$.
+By restricting $\mathfrak{A}$ to the original language $L$, one can derive $ \Gamma \nvDash \Lbot $, which contradicts the assumption $X \vDash b$. Therefore, $X \vdash b$.
+\end{proof}
+
+\section{Conclusion}
+\label{s:Conclusion}
+
+In this paper, a full formalisation of a first-order logic along with its semantics, deduction system, and the soundness and completeness theorems in the Coq proof assistant was presented. It was confirmed that only the law of excluded middle is used for the formalisation.
+
+There are possibilities for future works. First, the practical applicability of the framework such as $\mathsf{PA}$ and $\mathsf{ZFC}$ will be explored. Since both systems have axiom schemata, a tool will be made for handling meta-variables. Furthermore, the completeness theorem for first-order languages with cardinalities greater than $\aleph_0$ will also be proved.
+
+\section*{Acknowledgements}
+\label{s:Acknowledgements}
+
+I would like to thank Ph.D. Sewon Park for advice on the introduction and guidance on \LaTeX, and Prof. Kwanghoon Choi for providing feedback on the introduction.
+I am also grateful to Soonwon Moon for a valuable insight on the proof of \Cref{f:restr}, and to Chihyo Roh for correcting grammar.
+
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}
