@@ -158,8 +158,7 @@
 
 \section{Introduction}
 
-It has been a common practice in software verification to rely on proof assistants, such as Coq and Isabelle,
-to obtain formal proofs of program correctness. In these systems, programs are abstracted as mathematical entities, and their behaviour is denoted by certain mathematical properties. Thus, to reason about the behaviour of a program effectively using a proof assistant, there must be a well-developed theory about the mathematical properties being verified. For example, the Software Foundation Laboratory formalized a theory of ordinal numbers, which is a purely mathematical concept, to state and/or prove the termination of a program in the CCR library \cite{hur2023} of the laboratory.
+It has been a common practice in software verification to rely on proof assistants, such as Coq and Isabelle, to obtain formal proofs of program correctness. In these systems, programs are abstracted as mathematical entities, and their behaviour is denoted by certain mathematical properties. Thus, to reason about the behaviour of a program effectively using a proof assistant, there must be a well-developed theory about the mathematical properties being verified. For example, Software Foundations Lab formalized a theory of ordinal numbers, which is a purely mathematical concept, to state and/or prove the termination of a given program. See the paper ``Conditional Contextual Refinement'' \cite{hur2023}.
 
 Most proof assistants do not adopt the usual first-order language used by working mathematicians (e.g., $\mathsf{ZFC}$). Instead, they take dependent type theory as their foundation. Thus, translating even a simple proof directly into a proof assistant without an intermediate language can be error-prone and requires expertise in both foundational systems. Therefore, to facilitate the translation of mathematical theories into a proof assistant, an intermediate language is deemed necessary. 
 
@@ -170,7 +169,7 @@ The syntactic entailment $\Gamma \vdash C$ means that $C$ is provable assuming $
 while the semantic entailment $\Gamma \vDash C$ means that every model that satisfies all of the members of $\Gamma$ also satisfies $C$.
 Here, the word `satisfy' is defined as the notion of ``Tarski's definition of truth'' in \Cref{ss:Semantics}.
 The soundness theorem and the completeness theorem guarantee the two systems coincide with each other.
-Furthermore, to facilitate the translation of mathematical results, Leibniz equality $\Leq$ with its introduction and elimination rules is provided, and the quantifiers in the system under this study bind named variables. Thus, variables are not represented by de Bruijn indices.
+Furthermore, to facilitate the translation of mathematical results, Leibniz equality $\Leq$ with its introduction and elimination rules is provided, and also the quantifiers in the system under this study bind named individual variables---that is, individual variables are not represented by de Bruijn indices.
 
 Obviously, the idea of formalizing a first-order logic in dependent type theory is not new. To name a few:
 \begin{description}
@@ -194,7 +193,7 @@ The formalisation with proofs in this paper is implemented as a Coq project in \
 Here the organization of the project is briefly illustrated.
 \begin{description}[font=\normalfont]
   \item[\coqpath{theories/Logic/BasicFol.v}]
-    defines the syntax and semantics of first-order languages with substitutions and $\alpha$-equivalence.
+    defines the syntax and semantics of first-order languages with \Cref{d:model}, substitutions, and $\alpha$-equivalence.
 
   \item[\coqpath{theories/Logic/BasicFol2.v}]
     has statements and proofs on augmented languages by adding Hekin constants.
@@ -207,7 +206,6 @@ Here the organization of the project is briefly illustrated.
 
   \item[\coqpath{theories/Logic/ClassicalFol.v}]
     gives \Cref{t:soundness,t:Completeness}, which are the soundness theorem and the countable completeness theorem, respectively.
-
 \end{description}
 
 \section{Formalisation}
