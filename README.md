@@ -56,11 +56,11 @@ classic : forall P : Prop, P \/ ~ P
 
 ### Logic
 
-- [`BasicFol.v`](theories/Logic/BasicFol.v) contains basic definitions of first-order logic
+- [`BasicFol.v`](theories/Logic/BasicFol.v) contains basic definitions of first-order logic.
 
-- [`BasicFol2.v`](theories/Logic/BasicFol2.v) contains extra definitions of first-order logic
+- [`BasicFol2.v`](theories/Logic/BasicFol2.v) contains extra definitions of first-order logic.
 
-- [`ClassicalFol.v`](theories/Logic/ClassicalFol.v) develops a meta-theory on first-order logic, using the axiom `classic : forall P : Prop, P \/ ~ P`.
+- [`ClassicalFol.v`](theories/Logic/ClassicalFol.v) formalizes a meta-theory of first-order logic, using the axiom `classic : forall P : Prop, P \/ ~ P`.
 
 - [`HilbertFol.v`](theories/Logic/HilbertFol.v) contains basic facts on Hilbert calculus for first-order logic.
 
@@ -68,7 +68,7 @@ classic : forall P : Prop, P \/ ~ P
 
 ### Math
 
-- [`BooleanAlgebra.v`](theories/Math/BooleanAlgebra.v) develops a basic theory on Boolean algebras.
+- [`BooleanAlgebra.v`](theories/Math/BooleanAlgebra.v) formalizes a basic theory of Boolean algebras.
 
 - [`ThN.v`](theories/Math/ThN.v) contains basic facts on the natural numbers.
 
