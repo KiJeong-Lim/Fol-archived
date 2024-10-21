@@ -127,16 +127,9 @@
 
 \title{
   고전일차논리의 새로운 Coq 형식화와 건전성 및 완전성 정리의 증명 \\
-  { \small
-    임기정 \\
-    전남대학교 기계공학부 \\
-    \texttt{gijungdduk@naver.com} \\
-  }
-  A New Coq Formalisation of Classical First-Order Logic \\
-  with Proofs of the Soundness and Completeness Theorems \\
-  { \small 
-    Kijeong Lim
-  }
+  { \small 임기정 \\ 전남대학교 기계공학부 \\ \texttt{gijungdduk@naver.com} \\ }
+  A New Coq Formalisation of Classical First-Order Logic \\ with Proofs of the Soundness and Completeness Theorems \\
+  { \small Kijeong Lim }
 }
 
 \author{}
@@ -175,7 +168,7 @@ Obviously, the idea of formalizing a first-order logic in dependent type theory 
 
   \item[Constable and Bickford (2014) \cite{constable2014}] formalized the completeness theorem for intuitionistic logic rather than classical logic.
 
-  \item[Herberlin, Kim and Lee (2017) \cite{herberlin2017}]  formalized the completeness theorem of the Gentzen-style sequent calculus LJT for Kripke's semantics instead of Tarski's semantics.
+  \item[Herberlin, Kim and Lee (2017) \cite{herberlin2017}] formalized the completeness theorem of the Gentzen-style sequent calculus LJT for Kripke's semantics instead of Tarski's semantics.
 
   \item[Forster, Kirst and Wehr (2021) \cite{forster2021}] formalized the completeness theorem of classical natural deduction for Tarski's semantics. However, their setting, based on de Bruijn index, makes it difficult to use as a framework.
 
@@ -218,11 +211,11 @@ Each \inlinedef{individual variable} $x$ corresponds to a natural number:
 \[x \bnfis v_i \quad \mathrm{for} \quad i \in \IN . \]
 An \inlinedef{$L$-term} $t$ and an \inlinedef{$L$-formula} $\varphi$ are defined inductively:
 \begin{align*}
-t &\bnfis x \bnfor f \; \vec{t} \bnfor c  \\
-\varphi &\bnfis R \; \vec{t} \bnfor t_1 \Leq t_2 \bnfor \Lneg \varphi_1 \bnfor  \varphi_1  \Lto \varphi_2 \bnfor \Lall{x} \varphi_1
+t &\bnfis x \bnfor f \; \vec{t} \bnfor c \\
+\varphi &\bnfis R \; \vec{t} \bnfor t_1 \Leq t_2 \bnfor \Lneg \varphi_1 \bnfor \varphi_1 \Lto \varphi_2 \bnfor \Lall{x} \varphi_1
 \end{align*}
 where $f$ is a function symbol of $L$, $c$ is a constant symbol of $L$, $R$ is a relation symbol of $L$, and $\vec{t}$ is a vector of $L$-terms.
-For a first-order language $L$, write $\mathtt{trm} \, L$ for the type of $L$-terms,  $\mathtt{trms} \, L \, n$ for the type of vectors of $L$-terms of length $n$, and $\mathtt{frm} \, L$ for the type of $L$-formulae.
+For a first-order language $L$, write $\mathtt{trm} \, L$ for the type of $L$-terms, $\mathtt{trms} \, L \, n$ for the type of vectors of $L$-terms of length $n$, and $\mathtt{frm} \, L$ for the type of $L$-formulae.
 
 Similarly to \cite{copello2017}, a simultaneous substitution $\sigma$ is defined as a map $\IN \to \mathtt{trm} \, L$, saying that $\sigma (i)$ is substituted for $v_i$. Additionally, $\alpha$-equivalence is defined in the same way as \cite{copello2017}.
 
@@ -237,7 +230,7 @@ interpretations $R^\mathfrak{A} : A^{n_R} \to \Prop$ for each relation symbol $R
 such that $A$ is inhabited and
 $\sim_A$ is congruent with all interpretations of $\mathfrak{A}$,
 where $n_f$ and $n_R$ are the arities of $f$ and $R$, respectively.
-Denote the type $A$ by $| \mathfrak{A} |$, which is called the  \inlinedef{domain of discourse} of $\mathfrak{A}$.
+Denote the type $A$ by $| \mathfrak{A} |$, which is called the \inlinedef{domain of discourse} of $\mathfrak{A}$.
 
 Let $\mathfrak{A}$ be a structure of $L$ and $\rho : \IN \to | \mathfrak{A} |$ be given.
 An interpretation $\llbracket t \rrbracket_\rho^\mathfrak{A} : | \mathfrak{A} |$ of an $L$-term $t$ is defined recursively in a natural way, starting with $\llbracket v_i \rrbracket_\rho^\mathfrak{A} := \rho \left( i \right)$.
@@ -253,7 +246,7 @@ Given a first-order language $L$, an $L$-formula $C$ is said to be a \inlinedef{
 \label{ss:Deduction-system}
 
 The deduction system in this system is defined à la Hilbert in a manner that is similar to that used in the thesis of Russell O'Connor \cite{o2009incompleteness}.
-For a (possibly infinite) set $\Gamma$ of $L$-formulae and an $L$-formula $C$, write $\Gamma \vdash C$ to denote that there is a finite list $\vec{\varphi} \subseteq \Gamma$ such that  $\mathtt{proof} \, \vec{\varphi} \, C$ is inhabited. Here, 
+For a (possibly infinite) set $\Gamma$ of $L$-formulae and an $L$-formula $C$, write $\Gamma \vdash C$ to denote that there is a finite list $\vec{\varphi} \subseteq \Gamma$ such that $\mathtt{proof} \, \vec{\varphi} \, C$ is inhabited. Here, 
 $\mathtt{proof} : \mathtt{list} \, ( \mathtt{frm} \, L ) \to \mathtt{frm} \, L \to \mathbf{Set}$ is an inductive family of types representing proofs with constructors including:
 \begin{mathpar}
 \inferrule*[lab=Axm]{
@@ -349,7 +342,7 @@ Assume $X \nvdash b$.
 Take $\Gamma := \left\{ \Lneg b \right\} \cup X$.
 Then, $\Gamma \nvdash \Lbot$.
 Hence, one can construct a maximally consistent set $\Delta$ of $L^{\prime}$-formulae such that $\left\{ \theta_n \mid n \in \IN \right\} \cup \embed{\Gamma} \subseteq \Delta $ and $$\varphi \in \Delta \iff \Delta \vdash \varphi$$ for an arbitrary $L^{\prime}$-formula $\varphi$.
-Now, define a structure $\mathfrak{A}$ of $L^{\prime}$ as follows: its domain of discourse is $ \mathtt{trm} \, L^{\prime}  $, where the equivalence relation on $ | \mathfrak{A} | $ is defined by
+Now, define a structure $\mathfrak{A}$ of $L^{\prime}$ as follows: its domain of discourse is $ \mathtt{trm} \, L^{\prime} $, where the equivalence relation on $ | \mathfrak{A} | $ is defined by
 \[t_1 \sim t_2 \diff \Delta \vdash t_1 \Leq t_2 . \]
 The interpretations are given by $f^{\mathfrak{A}} := \vec{t} \mapsto f \; \vec{t}$, $c^{\mathfrak{A}} := c $, and $R^{\mathfrak{A}} := \vec{t} \mapsto \Delta \vdash R \; \vec{t}$.
 Then, for an arbitrary $L^{\prime}$-formula $\varphi$, setting $\rho := i \mapsto v_i$, by induction on the depth of $\varphi$, one can show $ \varphi \in \Delta \Leftrightarrow \llbracket \varphi \rrbracket_\rho^{\mathfrak{A}} $ with the axiom $\mathtt{classic}$.
