@@ -74,7 +74,7 @@ classic : forall P : Prop, P \/ ~ P
 
 ### Prelude
 
-- `Classical.v` : Facts on `CIC + (classic : forall P : Prop, P \/ ~ P)`.
+- `ClassicalFacts.v` : Facts on `CIC + (classic : forall P : Prop, P \/ ~ P)`.
 
 - `ConstructiveFacts.v` : Facts on `CIC`.
 
