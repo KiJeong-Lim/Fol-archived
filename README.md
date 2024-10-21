@@ -1,4 +1,4 @@
-# Fol
+# Fol-archived
 
 A New Coq Formalisation of Classical First-Order Logic with Proofs of the Soundness and Completeness Theorems
 
@@ -26,7 +26,7 @@ coq_makefile -f _CoqProject -o Makefile
 make -j4 -k
 ```
 
-### An expected output
+### The expected output
 
 ```
 @HilbertCalculus_sound
@@ -46,43 +46,43 @@ classic : forall P : Prop, P \/ ~ P
 
 ## 2. Overview of Files
 
-### Data
+### [Data](theoreis/Data/)
 
-- `Vector.v` : Replaces `Coq.Vectors.VectorDef.t`.
+- [`Vector.v`](theories/Data/Vector.v) : Replaces `Coq.Vectors.VectorDef.t`.
 
-### Logic
+### [Index](theories/Index/)
 
-- `BasicFol.v` : Basic definitions of First-Order Logic
+- [`Index.v`](theories/Index/Index.v) : Accumulates all source files and check their consistency.
 
-- `BasicFol2.v` : Extra definitions of First-Order Logic
+### [Logic](theories/Logic/)
 
-- `ClassicalFol.v` : Meta-theories on Classical First-Order Logic.
+- [`BasicFol.v`](theories/Logic/BasicFol.v) : Basic definitions of First-Order Logic
 
-- `HilbertFol.v` : Basic facts on Hilbert calculus for First-Order Logic.
+- [`BasicFol2.v`](theories/Logic/BasicFol2.v) : Extra definitions of First-Order Logic
 
-- `HilbertFol2.v` : Advanced facts on Hilbert calculus for First-Order Logic.
+- [`ClassicalFol.v`](theories/Logic/ClassicalFol.v) : Meta-theories on Classical First-Order Logic.
 
-### Index
+- [`HilbertFol.v`](theories/Logic/HilbertFol.v) : Basic facts on Hilbert calculus for First-Order Logic.
 
-- `Index.v` : Accumulates all source files and check their consistency.
+- [`HilbertFol2.v`](theories/Logic/HilbertFol2.v) : Advanced facts on Hilbert calculus for First-Order Logic.
 
-### Math
+### [Math](theories/Math/)
 
-- `BooleanAlgebra.v` : Basic theory on Boolean Algebras.
+- [`BooleanAlgebra.v`](theories/Math/BooleanAlgebra.v) : Basic theory on Boolean Algebras.
 
-- `ThN.v` : Basic facts on the natural numbers.
+- [`ThN.v`](theories/Math/ThN.v) : Basic facts on the natural numbers.
 
-### Prelude
+### [Prelude](theories/Prelude/)
 
-- `ClassicalFacts.v` : Facts on `CIC + (classic : forall P : Prop, P \/ ~ P)`.
+- [`ClassicalFacts.v`](theories/Prelude/ClassicalFacts.v) : Facts on `CIC + (classic : forall P : Prop, P \/ ~ P)`.
 
-- `ConstructiveFacts.v` : Facts on `CIC`.
+- [`ConstructiveFacts.v`](theories/Prelude/ConstructiveFacts.v) : Facts on `CIC`.
 
-- `Notations.v` : Reserves all notations to avoid the conflict.
+- [`Notations.v`](theories/Prelude/Notations.v) : Reserves all notations to avoid the conflict.
 
-- `SfLib.v` : The copy of `snu-sf/sflib.v`.
+- [`SfLib.v`](theories/Prelude/SfLib.v) : The copy of `snu-sf/sflib.v`.
 
-- `Prelude.v` : The prelude.
+- [`Prelude.v`](theories/Prelude/Prelude.v) : The prelude.
 
 ## 3. References
 
