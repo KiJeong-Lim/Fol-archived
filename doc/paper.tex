@@ -148,9 +148,7 @@
   \begin{@twocolumnfalse}
     \maketitle
     \begin{abstract}
-      In this study, assuming the law of excluded middle, the soundness theorem of a Hilbert calculus with respect to Tarski’s semantics and the completeness theorem for all countable first-order languages are formally proved.
-      This formalisation provides named quantifiers and Leibniz equality.
-      These features enable mathematicians to use it as a framework for verifying their proofs based on classical first-order logic.
+      In classical first-order logic, the soundness theorem states that syntactic entailment implies semantic entailment, while the completeness theorem asserts the converse. In this study, assuming the law of excluded middle, proofs of the soundness theorem of a Hilbert calculus with respect to Tarski's semantics and the completeness theorem for all countable first-order languages are presented. This formalisation, written in Coq, gives named quantifiers and Leibniz equality, and enables one to assume an infinite number of axioms.
       \newline
     \end{abstract}
   \end{@twocolumnfalse}
@@ -184,7 +182,7 @@ Obviously, the idea of formalizing a first-order logic in dependent type theory 
   \item[From (2022) \cite{halkjaer2022}] formalized the completeness theorem of a Hilbert calculus for Tarski's semantics while adopting de Bruijn index. However, there is a side condition.
 \end{description}
 
-However, there are no known works that give Leibniz equality and named quantifiers and allow users to assume an infinite number of axioms at the same time. Thus, the formalisation in this paper is the richest one.
+However, there are no known works that give Leibniz equality and named quantifiers and allow users to assume an infinite number of axioms at the same time.
 
 \section{Project overview}
 \label{s:coq}
