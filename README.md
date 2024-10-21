@@ -6,7 +6,7 @@ A New Coq Formalisation of Classical First-Order Logic with Proofs of the Soundn
 
 1. How to build
 
-2. Overview of Files
+2. Overview of files
 
 3. References
 
@@ -14,7 +14,7 @@ A New Coq Formalisation of Classical First-Order Logic with Proofs of the Soundn
 
 1. Install [opam](https://opam.ocaml.org/doc/Install.html).
 
-2. Open this folder in your terminal.
+2. Open this repository in your terminal.
 
 3. Type the following script in the terminal:
 
@@ -44,11 +44,11 @@ Axioms:
 classic : forall P : Prop, P \/ ~ P
 ```
 
-## 2. Overview of Files
+## 2. Overview of files
 
 ### Data
 
-- [`Vector.v`](theories/Data/Vector.v) replaces `Coq.Vectors.Vector.v`.
+- [`Vector.v`](theories/Data/Vector.v) replaces `Coq.Vectors.Vector`.
 
 ### Index
 
