@@ -48,11 +48,11 @@ classic : forall P : Prop, P \/ ~ P
 
 ### Data
 
-- [`Vector.v`](theories/Data/Vector.v) replaces `Coq.Vectors.Vector`.
+- [`Vector.v`](theories/Data/Vector.v) replaces `Coq.Vectors.Vector.v`.
 
 ### Index
 
-- [`Index.v`](theories/Index/Index.v) accumulates all source codes and check their consistency.
+- [`Index.v`](theories/Index/Index.v) accumulates all source code and checks for consistency.
 
 ### Logic
 
@@ -62,9 +62,9 @@ classic : forall P : Prop, P \/ ~ P
 
 - [`ClassicalFol.v`](theories/Logic/ClassicalFol.v) formalizes a meta-theory of first-order logic, using the axiom `classic : forall P : Prop, P \/ ~ P`.
 
-- [`HilbertFol.v`](theories/Logic/HilbertFol.v) contains basic facts on Hilbert calculus for first-order logic.
+- [`HilbertFol.v`](theories/Logic/HilbertFol.v) contains basic facts on a Hilbert calculus for first-order logic.
 
-- [`HilbertFol2.v`](theories/Logic/HilbertFol2.v) contains advanced facts on Hilbert calculus for first-order logic.
+- [`HilbertFol2.v`](theories/Logic/HilbertFol2.v) contains advanced facts on the Hilbert calculus for first-order logic.
 
 ### Math
 
