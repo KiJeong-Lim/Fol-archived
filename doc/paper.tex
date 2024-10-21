@@ -148,7 +148,7 @@
   \begin{@twocolumnfalse}
     \maketitle
     \begin{abstract}
-      In classical first-order logic, the soundness theorem states that syntactic entailment implies semantic entailment, while the completeness theorem asserts the converse. In this study, assuming the law of excluded middle, proofs of the soundness theorem of a Hilbert calculus with respect to Tarski's semantics and the completeness theorem for all countable first-order languages are presented. This formalisation, written in Coq, gives named quantifiers and Leibniz equality, and enables one to assume an infinite number of axioms.
+      In classical first-order logic, the soundness theorem states that syntactic entailment implies semantic entailment, while the completeness theorem asserts the converse. In this study, assuming the law of excluded middle, proofs of the soundness theorem of a Hilbert calculus with respect to Tarski's semantics and the completeness theorem for all countable first-order languages are presented. This formalisation, written in Coq, gives named quantifiers and Leibniz equality and enables one to assume an infinite number of axioms.
       \newline
     \end{abstract}
   \end{@twocolumnfalse}
@@ -167,7 +167,7 @@ The syntactic entailment $\Gamma \vdash C$ means that $C$ is provable assuming $
 while the semantic entailment $\Gamma \vDash C$ means that every model that satisfies all of the members of $\Gamma$ also satisfies $C$.
 Here, the word `satisfy' is defined as the notion of ``Tarski's definition of truth'' in \Cref{ss:Semantics}.
 The soundness theorem and the completeness theorem guarantee the two systems coincide with each other.
-Furthermore, to facilitate the translation of mathematical results, Leibniz equality $\Leq$ with its introduction and elimination rules is provided, and also the quantifiers in the system under this study bind named individual variables---that is, individual variables are not represented by de Bruijn indices.
+Furthermore, to facilitate the translation of mathematical results, Leibniz equality $\Leq$ with its introduction and elimination rules is provided, and also the quantifiers in the system under this study bind named individual variables---that is, individual variables are not represented as de Bruijn indices.
 
 Obviously, the idea of formalizing a first-order logic in dependent type theory is not new. To name a few:
 \begin{description}
@@ -182,7 +182,7 @@ Obviously, the idea of formalizing a first-order logic in dependent type theory 
   \item[From (2022) \cite{halkjaer2022}] formalized the completeness theorem of a Hilbert calculus for Tarski's semantics while adopting de Bruijn index. However, there is a side condition.
 \end{description}
 
-However, there are no known works that give Leibniz equality and named quantifiers and allow users to assume an infinite number of axioms at the same time.
+However, as far as I know, there is no work that provides named quantifiers and Leibniz equality while allowing users to assume an infinite number of axioms simultaneously.
 
 \section{Project overview}
 \label{s:coq}
@@ -212,7 +212,7 @@ Here the organization of the project is briefly illustrated.
 \subsection{Syntax}
 \label{ss:Syntax}
 
-A \inlinedef{first-order language} $L$ is represented as a record with the following fields:
+A \inlinedef{first-order language} $L$ is represented by a record with the following fields:
 a set of \inlinedef{function symbols}, a set of \inlinedef{constant symbols}, a set of \inlinedef{relation symbols}, a table mapping each function symbol to its arity, and a table mapping each relation symbol to its arity.
 Each \inlinedef{individual variable} $x$ corresponds to a natural number:
 \[x \bnfis v_i \quad \mathrm{for} \quad i \in \IN . \]
