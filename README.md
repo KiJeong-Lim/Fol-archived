@@ -2,11 +2,21 @@
 
 A Formal Proof of the Soundness and Completeness Theorems for Classical First-Order Logic written in Coq
 
-## Build with `opam`
+### Contents
 
-1. Open this folder in your terminal.
+1. How to build
 
-2. Now, type the following script:
+2. Overview of Files
+
+3. References
+
+## 1. How to build
+
+1. Install [opam](https://opam.ocaml.org/doc/Install.html).
+
+2. Open this folder in your terminal.
+
+3. Type the following script in the terminal:
 
 ```
 opam switch create . ocaml.5.1.1
@@ -16,11 +26,7 @@ coq_makefile -f _CoqProject -o Makefile
 make -j4 -k
 ```
 
-### How to install `opam`
-
-[Download Link](https://opam.ocaml.org/doc/Install.html)
-
-### The expected output
+### An expected output
 
 ```
 @HilbertCalculus_sound
@@ -38,7 +44,7 @@ Axioms:
 classic : forall P : Prop, P \/ ~ P
 ```
 
-## Contents
+## 2. Overview of Files
 
 ### Data
 
@@ -78,7 +84,7 @@ classic : forall P : Prop, P \/ ~ P
 
 - `Prelude.v` : The prelude.
 
-## References
+## 3. References
 
 1. [sflib](https://github.com/snu-sf/sflib)
 
