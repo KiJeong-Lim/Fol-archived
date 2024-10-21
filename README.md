@@ -1,6 +1,6 @@
 # Fol
 
-A Formal Proof of the Soundness and Completeness Theorems for Classical First-Order Logic written in Coq
+A New Coq Formalisation of Classical First-Order Logic with Proofs of the Soundness and Completeness Theorems
 
 ### Contents
 
