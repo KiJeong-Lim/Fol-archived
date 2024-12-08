@@ -1,12 +1,22 @@
-# Fol
+# Fol-archived
 
-A Formal Proof of the Soundness and Completeness Theorems for Classical First-Order Logic written in Coq
+A New Coq Formalisation of Classical First-Order Logic with Proofs of the Soundness and Completeness Theorems.
 
-## Build with `opam`
+### Contents
 
-1. Open this folder in your terminal.
+1. How to build
 
-2. Now, type the following script:
+2. Overview of files
+
+3. References
+
+## 1. How to build
+
+1. Install [opam](https://opam.ocaml.org/doc/Install.html).
+
+2. Open this repository in your terminal.
+
+3. Type the following script in the terminal:
 
 ```
 opam switch create . ocaml.5.1.1
@@ -15,10 +25,6 @@ opam pin add coq 8.18.0 -y
 coq_makefile -f _CoqProject -o Makefile
 make -j4 -k
 ```
-
-### How to install `opam`
-
-[Download Link](https://opam.ocaml.org/doc/Install.html)
 
 ### The expected output
 
@@ -30,55 +36,55 @@ Axioms:
 classic : forall P : Prop, P \/ ~ P
 @HilbertCalculus_complete
      : forall L : language,
-       isEnumerable (function_symbols L) ->
-       isEnumerable (constant_symbols L) ->
-       isEnumerable (relation_symbols L) ->
+       isCountable (function_symbols L) ->
+       isCountable (constant_symbols L) ->
+       isCountable (relation_symbols L) ->
        forall (X : ensemble (frm L)) (b : frm L), X ⊨ b -> X ⊢ b
 Axioms:
 classic : forall P : Prop, P \/ ~ P
 ```
 
-## Contents
+## 2. Overview of files
 
 ### Data
 
-- `Vector.v` : Replaces `Coq.Vectors.VectorDef.t`.
-
-### Logic
-
-- `BasicFol.v` : Basic definitions of First-Order Logic
-
-- `BasicFol2.v` : Extra definitions of First-Order Logic
-
-- `ClassicalFol.v` : Meta-theories on Classical First-Order Logic.
-
-- `HilbertFol.v` : Basic facts on Hilbert calculus for First-Order Logic.
-
-- `HilbertFol2.v` : Advanced facts on Hilbert calculus for First-Order Logic.
+- [`Vector.v`](theories/Data/Vector.v) replaces `Coq.Vectors.Vector`.
 
 ### Index
 
-- `Index.v` : Accumulates all source files and check their consistency.
+- [`Index.v`](theories/Index/Index.v) accumulates all source code and checks for consistency.
+
+### Logic
+
+- [`BasicFol.v`](theories/Logic/BasicFol.v) contains basic definitions of first-order logic.
+
+- [`BasicFol2.v`](theories/Logic/BasicFol2.v) contains extra definitions of first-order logic.
+
+- [`ClassicalFol.v`](theories/Logic/ClassicalFol.v) formalises the meta-theory on first-order logic, using the axiom `classic : forall P : Prop, P \/ ~ P`.
+
+- [`HilbertFol.v`](theories/Logic/HilbertFol.v) contains basic facts about a Hilbert calculus for first-order logic.
+
+- [`HilbertFol2.v`](theories/Logic/HilbertFol2.v) contains advanced facts about the Hilbert calculus for first-order logic.
 
 ### Math
 
-- `BooleanAlgebra.v` : Basic theory on Boolean Algebras.
+- [`BooleanAlgebra.v`](theories/Math/BooleanAlgebra.v) formalises a basic theory on Boolean algebras.
 
-- `ThN.v` : Basic facts on the natural numbers.
+- [`ThN.v`](theories/Math/ThN.v) contains basic facts about the natural numbers.
 
 ### Prelude
 
-- `Classical.v` : Facts on `CIC + (classic : forall P : Prop, P \/ ~ P)`.
+- [`ClassicalFacts.v`](theories/Prelude/ClassicalFacts.v) contains facts about `CIC + (classic : forall P : Prop, P \/ ~ P)`.
 
-- `ConstructiveFacts.v` : Facts on `CIC`.
+- [`ConstructiveFacts.v`](theories/Prelude/ConstructiveFacts.v) contains facts about `CIC`.
 
-- `Notations.v` : Reserves all notations to avoid the conflict.
+- [`Notations.v`](theories/Prelude/Notations.v) reserves all notations to avoid the conflict.
 
-- `SfLib.v` : The copy of `snu-sf/sflib.v`.
+- [`SfLib.v`](theories/Prelude/SfLib.v) is a copy of `snu-sf/sflib.v`.
 
-- `Prelude.v` : The prelude.
+- [`Prelude.v`](theories/Prelude/Prelude.v) is the prelude of this repository.
 
-## References
+## 3. References
 
 1. [sflib](https://github.com/snu-sf/sflib)
 

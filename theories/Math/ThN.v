@@ -647,6 +647,36 @@ Next Obligation.
   - rewrite <- m_spec. f_equal. rewrite cpInv_rightInv. reflexivity.
 Qed.
 
+#[local] Obligation Tactic := i.
+
+#[global, program]
+Instance sum_isCountable {A : Type} {A' : Type} `{COUNTABLE : isCountable A} `{COUNTABLE' : isCountable A'} : isCountable (A + A') :=
+  { encode it := match it with inl y => 2 * encode y | inr z => 2 * encode z + 1 end
+  ; decode n := if Nat.eqb (n mod 2) 0 then fmap inl (decode (n / 2)) else fmap inr (decode (n / 2))
+  }.
+Next Obligation.
+  destruct x as [y | z]; cbn beta zeta.
+  - obs_eqb ((2 * encode y) mod 2) 0.
+    + exploit (Nat.div_mod (2 * encode y) 2). lia. rewrite H_OBS. rewrite Nat.add_0_r. intros EQ.
+      assert (claim1 : encode y = 2 * encode y / 2) by lia.
+      rewrite <- claim1. rewrite decode_encode. reflexivity.
+    + contradiction H_OBS. rewrite Nat.mul_comm. eapply Nat.Div0.mod_mul.
+  - obs_eqb ((2 * encode z + 1) mod 2) 0.
+    + pose proof (claim := @mod_congruence_r (2 * encode z + 1) 2 (encode z) 1). rewrite H_OBS in claim. discriminate claim; lia.
+    + exploit (div_mod_uniqueness (2 * encode z + 1) 2 (encode z) 1); try lia. intros [claim1 claim2]. rewrite claim1. rewrite decode_encode; reflexivity.
+Qed.
+
+#[global, program]
+Instance prod_isCountable {A : Type} {A' : Type} `{COUNTABLE : isCountable A} `{COUNTABLE' : isCountable A'} : isCountable (A * A') :=
+  { encode it := cpInv (encode (fst it)) (encode (snd it))
+  ; decode n := liftM2 (@pair A A') (decode (fst (cp n))) (decode (snd (cp n)))
+  }.
+Next Obligation.
+  destruct x as [y z]; cbn beta; simpl fst; simpl snd.
+  rewrite cpInv_rightInv. simpl fst; simpl snd.
+  do 2 rewrite decode_encode. reflexivity.
+Qed.
+
 Fixpoint downto (n : nat) : list nat :=
   match n with
   | O => []

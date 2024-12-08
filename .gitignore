@@ -1,3 +1,7 @@
+# Fol-archived
+Makefile
+Makefile.conf
+_opam
 
 # Coq
 .*.aux
@@ -322,8 +326,3 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
-
-# FOL-archived
-Makefile
-Makefile.conf
-_opam

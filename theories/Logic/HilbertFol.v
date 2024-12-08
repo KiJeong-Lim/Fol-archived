@@ -256,19 +256,13 @@ Proof.
           pose proof (PF2 := AXM p).
           pose proof (PF3 := MP _ _ _ _ PF1 PF2). simpl in PF3.
           exact PF3.
-      - exploit IHPF1.
-        { ii. eapply INCL. ss!. }
-        i. exploit IHPF2.
-        { ii. eapply INCL. ss!. }
-        i. destruct x0 as (ps1'&INCL1&(PF1')). destruct x1 as (ps2'&INCL2&(PF2')).
-        exists (ps1' ++ ps2'). split.
-        { intros z z_in. s!. destruct z_in as [z_in | z_in]; ss!. }
+      - exploit IHPF1. { ii. eapply INCL. ss!. } intros (ps1'&INCL1&(PF1')). exploit IHPF2. { ii. eapply INCL. ss!. } intros (ps2'&INCL2&(PF2')).
+        exists (ps1' ++ ps2'). split. { intros z z_in. s!. destruct z_in as [z_in | z_in]; ss!. }
         econstructor. eapply MP with (p := Imp_frm A p); trivial.
         pose proof (RET := IMP2 A p q). change (proof ([] ++ ps1') (Imp_frm (Imp_frm A p) (Imp_frm A q))).
         eapply MP. exact RET. exact PF1'.
-      - exploit IHPF. done. i. destruct x1 as (ps'&INCL'&(PF')).
-        assert (claim : In A ps \/ E.fromList ps \subseteq Gamma).
-        { clear ps' q x NOT_FREE PF PF' IHPF INCL'. revert A INCL. induction ps as [ | p ps IH]; i.
+      - assert (claim : In A ps \/ E.fromList ps \subseteq Gamma).
+        { clear q x NOT_FREE PF IHPF. revert A INCL. induction ps as [ | p ps IH]; i.
           - right. done.
           - assert (H_in : In p (p :: ps)) by done.
             s!. apply INCL in H_in. destruct H_in as [-> | H_in].
@@ -279,7 +273,7 @@ Proof.
               * simpl. left. done.
               * right. done.
         }
-        do 2 red in INCL'. destruct claim as [claim | claim].
+        exploit IHPF. done. intros (ps'&INCL'&(PF')). do 2 red in INCL'. destruct claim as [claim | claim].
         + pose proof (NOT_FREE A claim) as x_NOT_FREE_A.
           assert (NOT_FREE' : forall p : frm L, In p ps' -> is_not_free_in_frm x p).
           { i. ss!. }
