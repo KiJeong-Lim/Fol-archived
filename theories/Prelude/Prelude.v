@@ -17,8 +17,7 @@ Create HintDb simplication_hints.
 #[global] Hint Rewrite forallb_app orb_true_iff orb_false_iff andb_true_iff andb_false_iff negb_true_iff negb_false_iff Nat.eqb_eq Nat.eqb_neq not_true_iff_false not_false_iff_true : simplication_hints.
 
 Ltac obs_eqb n m :=
-  let H_OBS := fresh "H_OBS" in
-  destruct (Nat.eqb n m) as [ | ] eqn: H_OBS; [rewrite Nat.eqb_eq in H_OBS | rewrite Nat.eqb_neq in H_OBS].
+  let H_OBS := fresh "H_OBS" in destruct (Nat.eqb n m) as [ | ] eqn: H_OBS; [rewrite Nat.eqb_eq in H_OBS | rewrite Nat.eqb_neq in H_OBS].
 
 #[local] Obligation Tactic := idtac.
 
@@ -410,7 +409,8 @@ Proof.
   reflexivity.
 Qed.
 
-Definition mkFunctorFromMonad {M : Type -> Type} `(MONAD : isMonad M) : isFunctor M :=
+#[global]
+Instance mkFunctorFromMonad {M : Type -> Type} `(MONAD : isMonad M) : isFunctor M :=
   fun A : Type => fun B : Type => fun f : A -> B => fun m : M A => bind m (fun x : A => pure (f x)).
 
 Lemma mkFunctorFromMonad_good {M : Type -> Type} `{SETOID1 : isSetoid1 M} `{MONAD : isMonad M}
@@ -892,23 +892,34 @@ Proof.
   - intros a IN. eapply LE. exists a. split; trivial. reflexivity.
 Qed.
 
-Definition isCompatibleWith_eqProp {A : Type} `{SETOID : isSetoid A} (P : A -> Prop) : Prop :=
-  forall x, P x -> forall y, x == y -> P y.
+Class isCompatibleWith_eqProp {A : Type} `{SETOID : isSetoid A} (P : A -> Prop) : Prop :=
+  compatWith_eqProp : forall x, P x -> forall y, x == y -> P y.
 
-Lemma eqProp_cl_isCompatibleWith_eqProp {A : Type} `{SETOID : isSetoid A} (X : ensemble A)
+#[global]
+Add Parametric Morphism {A : Type} {SETOID : isSetoid A} (P : A -> Prop) (COMPAT : isCompatibleWith_eqProp (A := A) (SETOID := SETOID) P)
+  : P with signature (eqProp ==> iff)
+  as isCompatibleWith_eqProp_sig_eqProp_iff.
+Proof.
+  intros x y EQ; red in COMPAT. now split; intros H_P; eapply COMPAT; eauto.
+Qed.
+
+#[global]
+Instance eqProp_cl_isCompatibleWith_eqProp {A : Type} `{SETOID : isSetoid A} (X : ensemble A)
   : isCompatibleWith_eqProp (eqProp_cl X).
 Proof.
   intros x [a [EQ IN]] y EQ'. exists a. split. rewrite <- EQ'. exact EQ. exact IN.
 Qed.
 
-Lemma isCompatibleWith_eqProp_forall {A : Type} {B : A -> Type} `{SETOID : forall i : A, isSetoid (B i)} (P : forall i : A, B i -> Prop)
+#[global]
+Instance isCompatibleWith_eqProp_forall {A : Type} {B : A -> Type} `{SETOID : forall i : A, isSetoid (B i)} (P : forall i : A, B i -> Prop)
   (COMPAT : forall i : A, isCompatibleWith_eqProp (P i))
   : isCompatibleWith_eqProp (fun x => forall i : A, P i (x i)).
 Proof.
   intros x P_x y EQ i. exact (COMPAT i (x i) (P_x i) (y i) (EQ i)).
 Defined.
 
-Lemma isCompatibleWith_eqProp_exists {A : Type} {B : A -> Type} `{SETOID : forall i : A, isSetoid (B i)} (P : forall i : A, B i -> Prop)
+#[global]
+Instance isCompatibleWith_eqProp_exists {A : Type} {B : A -> Type} `{SETOID : forall i : A, isSetoid (B i)} (P : forall i : A, B i -> Prop)
   (COMPAT : forall i : A, isCompatibleWith_eqProp (P i))
   : isCompatibleWith_eqProp (fun x => exists i : A, P i (x i)).
 Proof.
@@ -994,6 +1005,12 @@ Proof.
   - left. exists x'. reflexivity.
   - right. reflexivity.
 Defined.
+
+#[global]
+Instance option_isMonad : isMonad option :=
+  { pure {A} := @Some A
+  ; bind {A} {B} (m : option A) (k : A -> option B) := maybe (@None B) k m
+  }.
 
 End B.
 
@@ -1107,11 +1124,25 @@ Class isCountable (A : Type) : Type :=
     : decode (encode x) = Some x 
   }.
 
-#[local]
+Lemma encode_inj {A : Type} `{COUNTABLE : isCountable A} x1 x2
+  (EQ : encode x1 = encode x2)
+  : x1 = x2.
+Proof.
+  apply f_equal with (f := decode) in EQ. do 2 rewrite decode_encode in *. congruence.
+Qed.
+
+#[global]
 Instance isCountable_if_isEnumerable {A : Type} `(ENUMERABLE : isEnumerable A) : isCountable A :=
   { encode (x : A) := proj1_sig (enum_spec x)
   ; decode (n : nat) := Some (enum n)
   ; decode_encode (x : A) := f_equal (@Some A) (proj2_sig (enum_spec x))
+  }.
+
+#[global]
+Instance Empty_set_isCountable : isCountable Empty_set :=
+  { encode := Empty_set_rec _
+  ; decode _ := None
+  ; decode_encode := Empty_set_ind _
   }.
 
 Module L.
