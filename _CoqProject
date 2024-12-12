@@ -1,5 +1,6 @@
 -Q theories Fol #
 theories/Data/Vector.v #
+theories/Example/CZF.v #
 theories/Index/Index.v #
 theories/Logic/BasicFol.v #
 theories/Logic/BasicFol2.v #

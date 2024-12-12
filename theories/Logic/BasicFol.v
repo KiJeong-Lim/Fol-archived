@@ -1982,6 +1982,139 @@ Proof.
       * f_equal. eapply IH. simpl; lia.
 Qed.
 
+Section SCHEME.
+
+Inductive trm_scheme (n : nat) : Set :=
+  | TS_Idx (i : Fin.t n) : trm_scheme n
+  | TS_Fun (f : L.(function_symbols)) (ts : trms_scheme n (L.(function_arity_table) f)) : trm_scheme n
+  | TS_Con (c : L.(constant_symbols)) : trm_scheme n
+with trms_scheme (n : nat) : nat -> Set :=
+  | O_TSs : trms_scheme n (O)
+  | S_TSs (m : nat) (t : trm_scheme n) (ts : trms_scheme n m) : trms_scheme n (S m).
+
+Inductive frm_scheme (n : nat) : Set :=
+  | FS_Rel (R : L.(relation_symbols)) (ts : trms_scheme n (L.(relation_arity_table) R)) : frm_scheme n
+  | FS_Eqn (t1 : trm_scheme n) (t2 : trm_scheme n) : frm_scheme n
+  | FS_Bot : frm_scheme n
+  | FS_Neg (p1 : frm_scheme n) : frm_scheme n
+  | FS_Con (p1 : frm_scheme n) (p2 : frm_scheme n) : frm_scheme n
+  | FS_Dis (p1 : frm_scheme n) (p2 : frm_scheme n) : frm_scheme n
+  | FS_Imp (p1 : frm_scheme n) (p2 : frm_scheme n) : frm_scheme n
+  | FS_Iff (p1 : frm_scheme n) (p2 : frm_scheme n) : frm_scheme n
+  | FS_All (p1 : frm_scheme (S n)) : frm_scheme n
+  | FS_Exs (p1 : frm_scheme (S n)) : frm_scheme n.
+
+Definition rename_scheme (G : nat) (D : nat) : Set :=
+  Fin.t G -> Fin.t D.
+
+Definition rename_scheme_0 {G : nat} : rename_scheme G G :=
+  fun i => i.
+
+Definition rename_scheme_S {G : nat} : rename_scheme G (S G) :=
+  fun i => FS i.
+
+Definition rename_scheme_up {G : nat} {D : nat} (rho : rename_scheme G D) : rename_scheme (S G) (S D) :=
+  Fin.caseS FZ (fun i => FS (rho i)).
+
+Fixpoint rename_scheme_trm {G : nat} {D : nat} (rho : rename_scheme G D) (t : trm_scheme G) : trm_scheme D :=
+  match t with
+  | TS_Idx _ i => TS_Idx _ (rho i)
+  | TS_Fun _ f ts => TS_Fun _ f (rename_scheme_trms rho ts)
+  | TS_Con _ c => TS_Con _ c
+  end
+with rename_scheme_trms {n : nat} {G : nat} {D : nat} (rho : rename_scheme G D) (ts : trms_scheme G n) : trms_scheme D n :=
+  match ts with
+  | O_TSs _ => O_TSs _
+  | S_TSs _ n t ts => S_TSs _ n (rename_scheme_trm rho t) (rename_scheme_trms rho ts)
+  end.
+
+Fixpoint rename_scheme_frm {G : nat} {D : nat} (rho : rename_scheme G D) (p : frm_scheme G) : frm_scheme D :=
+  match p with
+  | FS_Rel _ R ts => FS_Rel _ R (rename_scheme_trms rho ts)
+  | FS_Eqn _ t1 t2 => FS_Eqn _ (rename_scheme_trm rho t1) (rename_scheme_trm rho t2)
+  | FS_Bot _ => FS_Bot _
+  | FS_Neg _ p1 => FS_Neg _ (rename_scheme_frm rho p1)
+  | FS_Con _ p1 p2 => FS_Con _ (rename_scheme_frm rho p1) (rename_scheme_frm rho p2)
+  | FS_Dis _ p1 p2 => FS_Dis _ (rename_scheme_frm rho p1) (rename_scheme_frm rho p2)
+  | FS_Imp _ p1 p2 => FS_Imp _ (rename_scheme_frm rho p1) (rename_scheme_frm rho p2)
+  | FS_Iff _ p1 p2 => FS_Iff _ (rename_scheme_frm rho p1) (rename_scheme_frm rho p2)
+  | FS_All _ p1 => FS_All _ (rename_scheme_frm (rename_scheme_up rho) p1)
+  | FS_Exs _ p1 => FS_Exs _ (rename_scheme_frm (rename_scheme_up rho) p1)
+  end.
+
+Definition subst_scheme (G : nat) (D : nat) : Set :=
+  Fin.t G -> trm_scheme D.
+
+Definition subst_scheme_0 {G : nat} : subst_scheme G G :=
+  fun i => TS_Idx _ i.
+
+Definition subst_scheme_S {G : nat} : subst_scheme G (S G) :=
+  fun i => TS_Idx _ (FS i).
+
+Definition subst_scheme_rename {G : nat} {D : nat} (rho : rename_scheme G D) : subst_scheme G D :=
+  fun i => TS_Idx _ (rho i).
+
+Definition subst_scheme_up {G : nat} {D : nat} (s : subst_scheme G D) : subst_scheme (S G) (S D) :=
+  Fin.caseS (TS_Idx _ FZ) (fun i => rename_scheme_trm rename_scheme_S (s i)).
+
+Fixpoint subst_scheme_trm {G : nat} {D : nat} (s : subst_scheme G D) (t : trm_scheme G) : trm_scheme D :=
+  match t with
+  | TS_Idx _ i => s i
+  | TS_Fun _ f ts => TS_Fun _ f (subst_scheme_trms s ts)
+  | TS_Con _ c => TS_Con _ c
+  end
+with subst_scheme_trms {n : nat} {G : nat} {D : nat} (s : subst_scheme G D) (ts : trms_scheme G n) : trms_scheme D n :=
+  match ts with
+  | O_TSs _ => O_TSs _
+  | S_TSs _ n t ts => S_TSs _ n (subst_scheme_trm s t) (subst_scheme_trms s ts)
+  end.
+
+Fixpoint subst_scheme_frm {G : nat} {D : nat} (s : subst_scheme G D) (p : frm_scheme G) : frm_scheme D :=
+  match p with
+  | FS_Rel _ R ts => FS_Rel _ R (subst_scheme_trms s ts)
+  | FS_Eqn _ t1 t2 => FS_Eqn _ (subst_scheme_trm s t1) (subst_scheme_trm s t2)
+  | FS_Bot _ => FS_Bot _
+  | FS_Neg _ p1 => FS_Neg _ (subst_scheme_frm s p1)
+  | FS_Con _ p1 p2 => FS_Con _ (subst_scheme_frm s p1) (subst_scheme_frm s p2)
+  | FS_Dis _ p1 p2 => FS_Dis _ (subst_scheme_frm s p1) (subst_scheme_frm s p2)
+  | FS_Imp _ p1 p2 => FS_Imp _ (subst_scheme_frm s p1) (subst_scheme_frm s p2)
+  | FS_Iff _ p1 p2 => FS_Iff _ (subst_scheme_frm s p1) (subst_scheme_frm s p2)
+  | FS_All _ p1 => FS_All _ (subst_scheme_frm (subst_scheme_up s) p1)
+  | FS_Exs _ p1 => FS_Exs _ (subst_scheme_frm (subst_scheme_up s) p1)
+  end.
+
+Definition mk_eig {n : nat} (ts : Vector.t (trm L) n) : ivar :=
+  V.foldr (fun t => max (maxs (fvs_trm t))) 0 ts + 1.
+
+Fixpoint eval_scheme_trm {G : nat} (env : Vector.t (trm L) G) (t : trm_scheme G) : trm L :=
+  match t with
+  | TS_Idx _ i => env !! i
+  | TS_Fun _ f ts => Fun_trm f (eval_scheme_trms env ts)
+  | TS_Con _ c => Con_trm c
+  end
+with eval_scheme_trms {n : nat} {G : nat} (env : Vector.t (trm L) G) (ts : trms_scheme G n) : trms L n :=
+  match ts with
+  | O_TSs _ => O_trms
+  | S_TSs _ n t ts => S_trms n (eval_scheme_trm env t) (eval_scheme_trms env ts)
+  end.
+
+Fixpoint eval_scheme_frm {G : nat} (env : Vector.t (trm L) G) (p : frm_scheme G) : frm L :=
+  let y : ivar := mk_eig env in
+  match p with
+  | FS_Rel _ R ts => Rel_frm R (eval_scheme_trms env ts)
+  | FS_Eqn _ t1 t2 => Eqn_frm (eval_scheme_trm env t1) (eval_scheme_trm env t2)
+  | FS_Bot _ => Bot_frm
+  | FS_Neg _ p1 => Neg_frm (eval_scheme_frm env p1)
+  | FS_Con _ p1 p2 => Con_frm (eval_scheme_frm env p1) (eval_scheme_frm env p2)
+  | FS_Dis _ p1 p2 => Dis_frm (eval_scheme_frm env p1) (eval_scheme_frm env p2)
+  | FS_Imp _ p1 p2 => Imp_frm (eval_scheme_frm env p1) (eval_scheme_frm env p2)
+  | FS_Iff _ p1 p2 => Iff_frm (eval_scheme_frm env p1) (eval_scheme_frm env p2)
+  | FS_All _ p1 => All_frm y (eval_scheme_frm (Var_trm y :: env) p1)
+  | FS_Exs _ p1 => Exs_frm y (eval_scheme_frm (Var_trm y :: env) p1)
+  end.
+
+End SCHEME.
+
 Definition close_ivars (p : frm L) : list ivar -> frm L :=
   @list_rec _ (fun _ => frm L) p (fun x => fun _ => fun q => All_frm x q).
 
